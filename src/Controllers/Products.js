@@ -14,9 +14,8 @@ const createProduct = async (req, res) => {
     if (!name || !description || !price || !category || !style || !color || !size || !quantity || shipping === undefined) {
       return res.status(400).send({ message: 'Required fields are missing' });
     }
-
     // Extract file information
-    const { filename, path } = req.file;
+    const image = req.file;
 
     // Create a new product instance
     const newProduct = new ProductModel({
@@ -29,10 +28,7 @@ const createProduct = async (req, res) => {
       size,
       quantity,
       shipping,
-      imageData: {
-        filename,
-        path,
-      },
+      image,
     });
 
     // Save the new product to the database
