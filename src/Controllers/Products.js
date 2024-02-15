@@ -12,25 +12,26 @@ const createProduct = async (req, res) => {
 
     // Check if all required fields are present
     if (!name || !description || !price || !category || !style || !color || !size || !quantity || shipping === undefined) {
-      return res.status(400).send({ message: 'Required fields are missing' });
-    }
+      return res.status(400).send({ message: 'Required fields are missing' });}
     // Extract file information
-    const image = req.file;
+    const imageData = req.file.filename;
+
+    console.log(imageData);
 
     // Create a new product instance
     const newProduct = new ProductModel({
       name,
       description,
       price,
+      image: imageData,
       category,
       style,
       color,
       size,
       quantity,
       shipping,
-      image,
     });
-
+ console.log(newProduct);
     // Save the new product to the database
     await newProduct.save();
 
