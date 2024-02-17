@@ -8,7 +8,7 @@ const router= express.Router()
 //use of multer package
 let storage = multer.diskStorage({
     destination :(req, file, cb)=>{          
-        cb(null, './Public/Images')
+        cb(null, "Public/Images")
     },
     filename:(req, file, cb)=>{
         const uniqueSuffix = Date.now() + path.extname(file.originalname)
@@ -24,7 +24,7 @@ let upload = multer({
     }
 });
 
-router.post("/create",upload.single('image'),ProductController.createProduct)
+router.post("/create",upload.array('images',3),ProductController.createProduct)
 router.put("/:id",ProductController.editProduct)
 router.delete("/:id",ProductController.deleteProduct)
 router.get("/",ProductController.getProductsByCategory)

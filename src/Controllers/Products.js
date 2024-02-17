@@ -3,27 +3,28 @@ import ProductModel from '../Models/Product.js';
 const createProduct = async (req, res) => {
   try {
     // Check if file exists in the request
-    if (!req.file) {
+    if (!req.files || !req.files.length) {
       return res.status(400).send({ message: 'No file uploaded' });
     }
 
     // Destructure fields from the request body
-    const { name, description, price, category, style, color, size, quantity, shipping } = req.body;
+    const { name, description, brand, price, category, style, color, size, quantity, shipping } = req.body;
 
     // Check if all required fields are present
-    if (!name || !description || !price || !category || !style || !color || !size || !quantity || shipping === undefined) {
-      return res.status(400).send({ message: 'Required fields are missing' });}
-    // Extract file information
-    const imageData = req.file.filename;
+    if (!name || !description || !brand || !price || !category || !style || !color || !size || !quantity || shipping === undefined) {
+      return res.status(400).send({ message: 'Required fields are missing' });
+    }
 
-    console.log(imageData);
+    // Extract file information
+    const imagePaths = req.files.map(file => file.filename);
 
     // Create a new product instance
     const newProduct = new ProductModel({
       name,
       description,
+      brand,
       price,
-      image: imageData,
+      images: imagePaths,
       category,
       style,
       color,
@@ -31,7 +32,7 @@ const createProduct = async (req, res) => {
       quantity,
       shipping,
     });
- console.log(newProduct);
+
     // Save the new product to the database
     await newProduct.save();
 
