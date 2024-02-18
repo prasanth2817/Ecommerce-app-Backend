@@ -28,6 +28,7 @@ router.post("/create",upload.array('images',3),ProductController.createProduct)
 router.put("/:id",ProductController.editProduct)
 router.delete("/:id",ProductController.deleteProduct)
 router.get("/",ProductController.getProductsByCategory)
+router.get("/allproducts",ProductController.getAllProducts)
 router.get("/:id",ProductController.getProductsById)
 
 export default router

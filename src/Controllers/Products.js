@@ -127,10 +127,28 @@ res.status(200).send({message:"Product Edited Sucessfully"})
     }
   }  
 
+  const getAllProducts= async(req,res)=>{
+    try {
+      const{category}= req.query;
+      const Allproducts = await ProductModel.find({category})
+      if(Allproducts.length>0)
+      res.status(200).send({message:"Products Fetched successfully",
+    product:Allproducts})
+    else
+    res.status(400).send({message:"No products found"})
+    } catch (error) {
+      console.error('Error: ', error);
+      res.status(500).send({
+        error: error.message,
+        message: 'Error in getting product',
+      });
+    }
+  }
 export default {
     createProduct,
     editProduct,
     deleteProduct,
     getProductsByCategory,
-    getProductsById
+    getProductsById,
+    getAllProducts
 }
