@@ -10,7 +10,7 @@ const ProductSchema = new mongoose.Schema(
     category: {type: String, required: [true, "Product Category is required"] },
     style: {type: String, required: [true, "Product Style is required"] },
     color: {type: String, required: [true, "Product color is required"] },
-    size: {type: String, required: [true, "Product Sizes is required"] },
+    size: [{ type: [String] }],
     quantity: {type: Number, required: [true, "Product quantity is required"],},
     shipping: { type: Boolean },
   },
