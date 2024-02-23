@@ -49,12 +49,15 @@ const createOrders = async (req, res) => {
 
 const getOrders = async (req, res) => {
   try {
-    const userEmail = req.body.email;
+    const userEmail = req.query.email; // Extract email from params
     if (!userEmail) {
-      return res.status(400).send({ message: "Email is required" });
+      return res.status(400).send({ message: "Unable to get user email" });
     }
 
+    // Query the database to find orders associated with the provided email
     const orders = await OrderModel.find({ email: userEmail });
+
+    // Check if orders were found
     if (orders.length > 0) {
       res.status(200).send({ message: "Orders fetched successfully", orders: orders });
     } else {
@@ -68,6 +71,8 @@ const getOrders = async (req, res) => {
     });
   }
 };
+
+
 
 
 export default {
