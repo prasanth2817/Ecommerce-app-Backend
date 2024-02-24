@@ -2,10 +2,10 @@ import OrderModel from "../Models/Orders.js";
 
 const createOrders = async (req, res) => {
   try {
-      const { email, products } = req.body;
+      const { userId, products } = req.body;
 
       // Check if email is missing or products is not an array
-      if (!email || !Array.isArray(products)) {
+      if (!userId || !Array.isArray(products)) {
           throw new Error('Invalid Data');
       }
 
@@ -18,13 +18,9 @@ const createOrders = async (req, res) => {
           // Return productId
           return product.productId;
       });
-
-      // Log productIds for debugging
-      console.log('Product IDs:', productIds);
-
       // Create a new order document
       const newOrder = new OrderModel({
-          email,
+          userId,
           products: productIds.map(productId => ({ productId })), // Assign array of productIds
       });
 
@@ -49,17 +45,18 @@ const createOrders = async (req, res) => {
 
 const getOrders = async (req, res) => {
   try {
-    const userEmail = req.query.email; // Extract email from params
-    if (!userEmail) {
-      return res.status(400).send({ message: "Unable to get user email" });
+    const email = req.query.email; // Extract email from query params
+    if (!email) {
+      return res.status(400).send({ message: "Email is required" });
     }
 
     // Query the database to find orders associated with the provided email
-    const orders = await OrderModel.find({ email: userEmail });
-
+    const orders = await OrderModel.find({ email: email });
     // Check if orders were found
     if (orders.length > 0) {
-      res.status(200).send({ message: "Orders fetched successfully", orders: orders });
+      // Map over each order and extract its products
+      const products = orders.map(order => order.products);
+      res.status(200).send({ message: "Orders fetched successfully", orders: products });
     } else {
       res.status(404).send({ message: "No orders found for the provided email" });
     }
@@ -71,6 +68,9 @@ const getOrders = async (req, res) => {
     });
   }
 };
+
+
+
 
 
 
