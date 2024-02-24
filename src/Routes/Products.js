@@ -2,6 +2,7 @@ import express from "express"
 import multer from "multer"
 import path from "path"
 import ProductController from "../Controllers/Products.js"
+import Auth from "../Common/Auth.js"
 
 const router= express.Router()
 
@@ -24,7 +25,7 @@ let upload = multer({
     }
 });
 
-router.post("/create",upload.array('images',3),ProductController.createProduct)
+router.post("/create",upload.array('images',3),Auth.adminGaurd,ProductController.createProduct)
 router.put("/:id",ProductController.editProduct)
 router.delete("/:id",ProductController.deleteProduct)
 router.get("/",ProductController.getProductsByCategory)
