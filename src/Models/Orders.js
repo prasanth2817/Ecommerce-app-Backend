@@ -2,7 +2,7 @@ import mongoose from "./index.js";
 
 const OrderSchema = new mongoose.Schema(
   {
-    userId:{type:String, required:[true,"userId is required"]},
+    email:{type:String, required:[true,"email is required"]},
     products: [{
         productId: {type: String}
     }]

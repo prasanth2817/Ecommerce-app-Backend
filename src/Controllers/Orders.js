@@ -2,45 +2,47 @@ import OrderModel from "../Models/Orders.js";
 
 const createOrders = async (req, res) => {
   try {
-      const { userId, products } = req.body;
+    const { email, products } = req.body;
 
-      // Check if email is missing or products is not an array
-      if (!userId || !Array.isArray(products)) {
-          throw new Error('Invalid Data');
+    // Check if email is missing or products is not an array
+    if (!email || !Array.isArray(products) || products.length === 0) {
+      throw new Error('Invalid Data: Email is required and products must be a non-empty array');
+    }
+
+    // Extract productIds from products array
+    const productIds = products.map(product => {
+      // Ensure each product has a productId property
+      if (typeof product !== 'object' || !product.productId) {
+        throw new Error('Invalid product data: Each product must have a productId');
       }
+      // Return productId
+      return product.productId;
+    });
 
-      // Extract productIds from products array
-      const productIds = products.map(product => {
-          // Ensure each product has a productId property
-          if (typeof product !== 'object' || !product.productId) {
-              throw new Error('Invalid product data.');
-          }
-          // Return productId
-          return product.productId;
-      });
-      // Create a new order document
-      const newOrder = new OrderModel({
-          userId,
-          products: productIds.map(productId => ({ productId })), // Assign array of productIds
-      });
+    // Create a new order document
+    const newOrder = new OrderModel({
+      email,
+      products: productIds.map(productId => ({ productId })),
+    });
 
-      // Save the new order document
-      await newOrder.save();
+    // Save the new order document
+    await newOrder.save();
 
-      // Send success response
-      res.status(201).send({
-          message: 'Order received successfully',
-          Order: newOrder,
-      });
+    // Send success response
+    res.status(201).send({
+      message: 'Order received successfully',
+      Order: newOrder,
+    });
   } catch (error) {
-      // Log and send error response
-      console.error('Error:', error);
-      res.status(500).send({
-          error: error.message,
-          message: 'Error in creating orders',
-      });
+    // Log and send error response
+    console.error('Error:', error);
+    res.status(500).send({
+      error: error.message,
+      message: 'Error in creating orders',
+    });
   }
 };
+
 
 
 const getOrders = async (req, res) => {
